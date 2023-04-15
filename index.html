@@ -1,25 +1,40 @@
+<!-- 
+TODO 
+
+
+
+
+
+
+
+ -->
+
 <!DOCTYPE html>
 <html>
 <head>
 	<title style="float: ;">Catan-o-Rama!</title>
 	<link rel='icon' type='image/x-icon' href='favicon.ico'>
+	<style type="text/css">
+		button{
+			font-size: 30px;
+		}
+	</style>
 </head>
 
-<body style="text-align: center; background-color: white;">
-
+<body style="
+		text-align: center; 
+		background-color: white;">
 	<h1>
 		<img src="explosion.gif">
 		<i>Catan-o-Rama!</i>
 		<img src="explosion.gif">
 	</h1>
 	<div>
-		<i>Catan-o-Rama!</i> combines the fun of Catan with of anxiety of a trading floor during a market collapse
+		<b><i>Catan-o-Rama!</i></b> combines the fun of Catan with the anxiety of a trading floor during a market collapse
 		<br>
 		All you need is: a physical Catan set, and this website
 	</div>	
 	<br>
-	
-	
 	<div style='width: 900px; margin: auto;'>
 		<details open style="background-color: lightyellow;">
 	    	<summary><b>Rules</b></summary>
@@ -37,9 +52,11 @@
 		</details>
 		<details closed style="background-color: lightsalmon;">
 	    	<summary><b>Options</b></summary>
-
-	    	<div class="slidecontainer">
-			  <input type="range" min="1" max="30" value="15" class="slider" id="myRange">
+			<div>
+				<input type="range" min="1" max="30" value="15" class="slider" id="myRange">
+			</div>
+	    	<div>
+				<input type="checkbox">
 			</div>
 			<!-- <p>
 				<button id='optionsButton' style="background-color: cyan; ">
@@ -59,58 +76,70 @@
 					stack dice rolls? 
 					(Restore default options) 
 				-->
-			</p> -->
+			</p>
 		</details>
-	</div>
-	<br>
-	<div id=playerInput>
-		Enter player names (order doesn't matter):
-		<div id='playerInputs'>
-			<li class='playerInput' id=player1>
-				Player 1: <input id=player1input type="text">
-			</li>
-			<li class='playerInput' id=player2>
-				Player 2: <input id=player2input type="text">
-			</li>
-		</div>
-		<div>
-			<button id='addPlayer'>+</button>
-			<button id='removePlayer' disabled>-</button>
-		</div>
-	</div>
-
-	<div id="timer">
-		15
-	</div>
-	
-	<h1>
-		<div id="diceRoll">
-			...
+		<br>
+		<div id=playerInput>
+			Enter player names (order doesn't matter):
+			<div id='playerInputs'>
+				<div class='playerInput' id=player1>
+					Player 1: <input id=player1input type="text">
+				</div>
+				<div class='playerInput' id=player2>
+					Player 2: <input id=player2input type="text">
+				</div>
+			</div>
+			<div>
+				<button id='addPlayer'>+</button>
+				<button id='removePlayer' disabled>-</button>
+			</div>
 		</div>
 		
-	</h1>
-	<div id='robberDisplay'>
-			The robber is ben
-	</div>
-	<div>
-		<button id='startButton', style="background-color: lightgreen; font-size: 70;">
-			START
-		</button>
-		<button id='skipButton', style="background-color: yellow;" >
-			SKIP
-		</button>
-		<button id='pauseButton', style="background-color: mediumpurple;">
-			PAUSE
-		</button>
-		<button id='restartButton' style="background-color: red;">
-			RESTART
-		</button>
-	</div>
-	<br>
-	<img src="fire.gif">
+		<!-- <div id=rollHistory style="float:right;">
+				<div>
+					Previous rolls:
+				</div>
+				<div>
+					5
+				</div>
+				<div>
+					7
+				</div>
+		</div> -->
+		<div id="timer" style="font-size: 30px;">
+			15
+		</div>
+		<br>	
+			
+		<div id="diceRoll" style="font-size: 100px;">
+			...
+		</div>
+		<br>
+		<div id='robberDisplay'></div>
+		<div>
+			<button id='startButton', style="background-color: lightgreen; font-size: 70px">
+				START
+			</button>
+			<button id='skipButton', style="background-color: yellow" >
+				SKIP
+			</button>
+			<button id='pauseButton', style="background-color: mediumpurple">
+				PAUSE
+			</button>
+			<button id='restartButton' style="background-color: red">
+				RESTART
+			</button>
+		</div>
+		<br>
+		<img src="fire.gif">
 
+
+	</div>
 
 	
+<!-- 			-->
+<!--	SCRIPT	-->
+<!--  			-->
 
 	<script>
 		let players = [];
@@ -136,21 +165,19 @@
 
 		restart()
 		let diceRollAudio = new Audio();
-		//audio.playbackRate = 1.2
 		diceRollAudio.src = 'dice.mp3'
 		
 		addPlayer.onclick = () => {
 	        numPlayers++
-			let newPlayerItem = document.createElement("li");
+			let newPlayerItem = document.createElement("div");
 			newPlayerItem.id = "player" + numPlayers
 			newPlayerItem.innerHTML = "Player " + numPlayers + ": "
 			let newPlayerInput = document.createElement("input");
 			newPlayerItem.appendChild(newPlayerInput)
 	        playerInputs.appendChild(newPlayerItem);
-	        
 	        removePlayer.disabled = false;
 	        if (numPlayers == 10) {
-	        	addPlayer.disabled = true; 
+	        	addPlayer.disabled = true;
 	        }
 		}
 
@@ -169,8 +196,7 @@
 			pauseButton.style.display = 'inline';
 			restartButton.style.display = 'inline';
 			timer.style.display = 'inline'
-			diceRoll.style.display = 'inline'
-			
+			diceRoll.style.display = 'inline-block'
 			secondsLeft = 4
 			gameStarted = true;
 			startTimer();
@@ -227,8 +253,11 @@
 					robber = "Player " + (randomIndex + 1)
 				}
 			 	msg.text = "7! The robber is! " + robber + "! Anyone with 8 or more cards, discard half."
+			 	robberDisplay.innerHTML = "the robber is " + robber
+ 			 	robberDisplay.style.display = 'inline';
 			} else {
 				msg.text = result;
+				robberDisplay.style.display = 'none';
 			}
 			window.speechSynthesis.speak(msg);
 			diceRoll.innerHTML = result
@@ -253,8 +282,9 @@
 			pauseButton.style.display = 'none';
 			restartButton.style.display = 'none';
 			timer.style.display = 'none'
+			robberDisplay.style.display = 'none';
 			diceRoll.style.display = 'none'
-			diceRoll.innerHTML = '...'
+			//diceRoll.innerHTML = '...'
 			unpause()
 		}
 
@@ -275,8 +305,6 @@
 		function get(id) {
 			return document.getElementById(id);
 		}
-
 	</script>
-
 </body>
 </html>
