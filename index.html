@@ -5,10 +5,7 @@
 	<link rel='icon' type='image/x-icon' href='favicon.ico'>
 </head>
 
-<body style="
-	text-align: center; background-color: white;
-	fontFamily: 'Impact,Charcoal,sans-serif'
-	back">
+<body style="text-align: center; background-color: white;">
 
 	<h1>
 		<img src="explosion.gif">
@@ -16,9 +13,9 @@
 		<img src="explosion.gif">
 	</h1>
 	<div>
-		<i>Catan-o-Rama!</i> is variation of Catan meant to evoke the feeling of a trading floor during a market collapse. 
+		<i>Catan-o-Rama!</i> combines the fun of Catan with of anxiety of a trading floor during a market collapse
 		<br>
-		All you need is: a physical Catan set, and this website.
+		All you need is: a physical Catan set, and this website
 	</div>	
 	<br>
 	
@@ -40,10 +37,28 @@
 		</details>
 		<details closed style="background-color: lightsalmon;">
 	    	<summary><b>Options</b></summary>
+
+	    	<div class="slidecontainer">
+			  <input type="range" min="1" max="30" value="15" class="slider" id="myRange">
+			</div>
 			<!-- <p>
 				<button id='optionsButton' style="background-color: cyan; ">
 					OPTIONS
 				</button>	
+				Options:
+					Wait time:
+					Show countdown? y/n
+					Robber determination: random/cycle
+
+					Randomize wait time? y/n
+
+
+					Sound effects?
+
+					Longer wait on robber turns? na...
+					stack dice rolls? 
+					(Restore default options) 
+				-->
 			</p> -->
 		</details>
 	</div>
@@ -72,7 +87,11 @@
 		<div id="diceRoll">
 			...
 		</div>
+		
 	</h1>
+	<div id='robberDisplay'>
+			The robber is ben
+	</div>
 	<div>
 		<button id='startButton', style="background-color: lightgreen; font-size: 70;">
 			START
@@ -91,17 +110,7 @@
 	<img src="fire.gif">
 
 
-	<!-- Options:
-		Wait time:
-		Show countdown? y/n
-		Randomize wait time? y/n
-
-		Longer wait on robber turns?
-		Robber determination: random/cycle
-		Sound effects?
-		stack dice rolls? 
-		(Restore default options) 
-	-->
+	
 
 	<script>
 		let players = [];
@@ -123,6 +132,7 @@
 		let pauseButton = get('pauseButton');
 		let restartButton = get('restartButton')
 		let numPlayers = 2
+		let lastRobber = -1
 
 		restart()
 		let diceRollAudio = new Audio();
@@ -211,9 +221,12 @@
 			//rollHistory.append(result)
 			var msg = new SpeechSynthesisUtterance();
 			if (result == 7) {
-				let players = getPlayers()
-				robber = players[Math.floor(Math.random() * players.length)]
-			 	msg.text = "7! Anyone with 8 or more cards, discard half. The robber is! " + robber;
+				let randomIndex = Math.floor(Math.random() * numPlayers)
+				robber = getPlayers()[randomIndex]
+				if (!robber ) {
+					robber = "Player " + (randomIndex + 1)
+				}
+			 	msg.text = "7! The robber is! " + robber + "! Anyone with 8 or more cards, discard half."
 			} else {
 				msg.text = result;
 			}
