@@ -170,6 +170,9 @@ CATAN-O-RAMA
 		restart()
 		let diceRollAudio = new Audio();
 		diceRollAudio.src = 'dice.mp3'
+
+		let shatterAudio = new Audio();
+		shatterAudio.src = 'shatter.mp3'
 		
 		addPlayer.onclick = () => {
 	        numPlayers++
@@ -197,6 +200,8 @@ CATAN-O-RAMA
 		}
 
 		startButton.onclick = () => {
+			shatterAudio.currentTime = 0
+			shatterAudio.play()
 			startButton.style.display = 'none';
 			skipButton.style.display = 'inline';
 			pauseButton.style.display = 'inline';
