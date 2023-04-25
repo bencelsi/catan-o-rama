@@ -1,18 +1,11 @@
 <!-- 
-TODO 
-
-
-
-
-
-
-
+CATAN-O-RAMA
  -->
 
 <!DOCTYPE html>
 <html>
 <head>
-	<title style="float: ;">Catan-o-Rama!</title>
+	<title>Catan-o-Rama!</title>
 	<link rel='icon' type='image/x-icon' href='favicon.ico'>
 	<style type="text/css">
 		button{
@@ -27,113 +20,124 @@ TODO
 	<h1>
 		<img src="explosion.gif">
 		<i>Catan-o-Rama!</i>
+		
 		<img src="explosion.gif">
 	</h1>
 	<div>
-		<b><i>Catan-o-Rama!</i></b> combines the fun of Catan with the anxiety of a trading floor during a market collapse
-		<br>
-		All you need is: a physical Catan set, and this website
+		
 	</div>	
 	<br>
 	<div style='width: 900px; margin: auto;'>
-		<details open style="background-color: lightyellow;">
+		
+		<br><br>
+		<div style="display: flex; width: 900px;">
+			<div id=playerInput style=" width: 25%; background-color: lightgray;">
+				<h3>Player Names</h3>
+				<div id='playerInputs'>
+					<div class='playerInput' id=player1>
+						Player 1: <input id=player1input>
+					</div>
+					<div class='playerInput' id=player2>
+						Player 2: <input id=player2input>
+					</div>
+				</div>
+				<div>
+					<button id='addPlayer'>+</button>
+					<button id='removePlayer' disabled>-</button>
+				</div>
+			</div>
+			
+			<div style="width: 50%;">
+				<div id="timer" style="font-size: 30px;">
+					15
+				</div>
+				<br>
+				<div id="diceRoll" style="font-size: 100px;">
+					...
+				</div>
+				<br>
+				<div id='robberDisplay'></div>
+				<div>
+					<button id='startButton', style="background-color: red; font-size: 70px">
+						START
+					</button>
+					<button id='skipButton', style="background-color: salmon;" >
+						SKIP
+					</button>
+					<button id='pauseButton', style="background-color: salmon;">
+						PAUSE
+					</button>
+					<button id='restartButton' style="background-color: salmon;">
+						RESTART
+					</button>
+				</div>
+			</div>
+
+			<div style="float: right; width: 25%; background-color: lightgray;">
+				<h3>Previous Rolls</h3>
+				<div>
+					<div id = previousRoll1 style="opacity: 100%;"></div>
+					<div id = previousRoll2 style="opacity: 80%;"></div>
+					<div id = previousRoll3 style="opacity: 60%;"></div>
+					<div id = previousRoll4 style="opacity: 40%;"></div>
+					<div id = previousRoll5 style="opacity: 20%;"></div>
+					<div id = previousRoll6 style="opacity: 7%;"></div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Rules & Options -->
+		<br>
+		<br>
+
+		<img src="fire.gif">
+		<details open style="background-color: lightgray;">
 	    	<summary><b>Rules</b></summary>
-	    	<div style="text-align: left";>
+	    	<div style="text-align: left">
 				<p>• The opening phase, where everyone places their initial settlements and roads, is unchanged from normal Catan.</p>
 				<p>• When that's done, enter players' names, and hit 'START'. This kicks off a timer that automatically rolls the dice every 15 seconds. On each dice roll, players collect resources as they would normally. </p>
 				<p>• There are no turns. Any player can build, trade, or play development cards as if it were their turn, at any time. </p>
-				<p>• When a 7 is rolled, the player who gets to place the robber will be randomly determined. </p>
-				<p>• When a player plays a knight card or rolls a 7, no one else can play a knight card until the robber attack is finished. However, if they take too long and there's another dice roll before then, they forfeit the attack and the robber goes to the desert. If they've placed the robber but haven’t yet stolen a resource, the robber remains but they don't get a resource.</p>
+				<p>• When a 7 is rolled, the player who gets to place the robber will be randomly determined. (This can be cycle or random)</p>
+				<p>• When a player plays a knight card or rolls a 7, no one else can play a knight card until the robber attack is finished. However, if there's another dice roll before they finish the attack, the robber goes to the desert. If they've placed the robber but haven’t yet stolen a resource, the robber remains but they don't get a resource.</p>
 				<!-- chaotic variation: anyone can play knight card at any time, but latter knights always override previous.  -->
-				<p>• When building, priority goes to whoever can place the gamepiece first. Players must pay the build cost before placing a gamepiece.</p>
+				<p>• When building, priority goes to whoever places the gamepiece first. Players must pay the build cost before placing a gamepiece.</p>
 	    		<p>• If all players agree, you can hit 'SKIP' to skip to the next dice roll. </p>
 	    		<p>• Otherwise, gameplay is the same as normal Catan. </p>
     		</div>
 		</details>
-		<details closed style="background-color: lightsalmon;">
+		<br>
+		<details closed style="background-color: lightgray; overflow: auto">
 	    	<summary><b>Options</b></summary>
-			<div>
-				<input type="range" min="1" max="30" value="15" class="slider" id="myRange">
+			<div style="float: left; padding-left: 20px; padding-right: 20px">
+				Roll Interval: <br>
+				<input id="rollInterval" type="range" min="1" max="30" defaultValue="15" class="slider" id="myRange" oninput="this.nextElementSibling.value = this.value">
+				<output>15</output>
 			</div>
-	    	<div>
-				<input type="checkbox">
+			<div style="float: right; padding-left: 20px; padding-right: 20px">
+	    		Robber Selection:
+	    		<select id="robberMode">
+				  <option value="random">Random</option>
+				  <option value="cycle">Cycle</option>
+				</select>
 			</div>
-			<!-- <p>
-				<button id='optionsButton' style="background-color: cyan; ">
-					OPTIONS
-				</button>	
-				Options:
-					Wait time:
-					Show countdown? y/n
-					Robber determination: random/cycle
-
-					Randomize wait time? y/n
-
-
-					Sound effects?
-
-					Longer wait on robber turns? na...
-					stack dice rolls? 
-					(Restore default options) 
-				-->
+	    	<!-- <div style="float: left; padding-left: 20px; padding-right: 20px">
+	    		Show countdown?
+				<input type="checkbox" checked="true">
+			</div> -->
+			<!-- 
+				Other ideas
+				Randomize wait time?
+				Alternate voice?
+				Sound effects?
+				Longer wait on robber turns? 
+				stack dice rolls? 
+				(Restore default options) 
+			-->
 			</p>
 		</details>
-		<br>
-		<div id=playerInput>
-			Enter player names (order doesn't matter):
-			<div id='playerInputs'>
-				<div class='playerInput' id=player1>
-					Player 1: <input id=player1input type="text">
-				</div>
-				<div class='playerInput' id=player2>
-					Player 2: <input id=player2input type="text">
-				</div>
-			</div>
-			<div>
-				<button id='addPlayer'>+</button>
-				<button id='removePlayer' disabled>-</button>
-			</div>
-		</div>
-		
-		<!-- <div id=rollHistory style="float:right;">
-				<div>
-					Previous rolls:
-				</div>
-				<div>
-					5
-				</div>
-				<div>
-					7
-				</div>
-		</div> -->
-		<div id="timer" style="font-size: 30px;">
-			15
-		</div>
-		<br>	
-			
-		<div id="diceRoll" style="font-size: 100px;">
-			...
-		</div>
-		<br>
-		<div id='robberDisplay'></div>
-		<div>
-			<button id='startButton', style="background-color: lightgreen; font-size: 70px">
-				START
-			</button>
-			<button id='skipButton', style="background-color: yellow" >
-				SKIP
-			</button>
-			<button id='pauseButton', style="background-color: mediumpurple">
-				PAUSE
-			</button>
-			<button id='restartButton' style="background-color: red">
-				RESTART
-			</button>
-		</div>
-		<br>
-		<img src="fire.gif">
-
-
+		<br><br>
+		<!-- <img src="fire.gif"> -->
 	</div>
 
 	
@@ -161,7 +165,7 @@ TODO
 		let pauseButton = get('pauseButton');
 		let restartButton = get('restartButton')
 		let numPlayers = 2
-		let lastRobber = -1
+		let robberIndex = -1
 
 		restart()
 		let diceRollAudio = new Audio();
@@ -170,13 +174,15 @@ TODO
 		addPlayer.onclick = () => {
 	        numPlayers++
 			let newPlayerItem = document.createElement("div");
-			newPlayerItem.id = "player" + numPlayers
+			//newPlayerItem.id = "player" + numPlayers
 			newPlayerItem.innerHTML = "Player " + numPlayers + ": "
+			newPlayerItem.id = "player" + numPlayers
 			let newPlayerInput = document.createElement("input");
+			newPlayerInput.id = "player" + numPlayers + 'input'
 			newPlayerItem.appendChild(newPlayerInput)
 	        playerInputs.appendChild(newPlayerItem);
 	        removePlayer.disabled = false;
-	        if (numPlayers == 10) {
+	        if (numPlayers == 8) {
 	        	addPlayer.disabled = true;
 	        }
 		}
@@ -203,14 +209,14 @@ TODO
 		}
 
 		skipButton.onclick = () => {
-			secondsLeft = waitTime
-			timer.innerHTML = waitTime
+			secondsLeft = get('rollInterval').value
+			timer.innerHTML = get('rollInterval').value
 			rollDice()
 		}
 
 		pauseButton.onclick = () => {
 			if (paused) {
-				unpause()
+				resume()
 				startTimer()
 			} else {
 				pause()
@@ -229,7 +235,7 @@ TODO
 			while (gameStarted & !paused) {
 				if (secondsLeft == 1) {
 					rollDice()
-					secondsLeft = waitTime
+					secondsLeft = get('rollInterval').value
 				} else {
 					secondsLeft--
 				}
@@ -242,18 +248,22 @@ TODO
 		function rollDice() {
 			diceRollAudio.currentTime = 0
 			diceRollAudio.play()
-			// body...
+			if (diceRoll.innerHTML != "...") {
+				addPreviousRoll(diceRoll.innerHTML)
+			}
 			let result = 2 + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6);
-			//rollHistory.append(result)
 			var msg = new SpeechSynthesisUtterance();
+			
 			if (result == 7) {
-				let randomIndex = Math.floor(Math.random() * numPlayers)
-				robber = getPlayers()[randomIndex]
-				if (!robber ) {
-					robber = "Player " + (randomIndex + 1)
+				let players = getPlayers()
+				if (get("robberMode").value == 'random' || robberIndex === -1) {
+					robberIndex = Math.floor(Math.random() * numPlayers)
+				} else {
+					robberIndex = robberIndex < numPlayers - 1 ? robberIndex + 1 : 0;
 				}
+				robber = players[robberIndex] ? players[robberIndex] : "Player " + (robberIndex + 1)
 			 	msg.text = "7! The robber is! " + robber + "! Anyone with 8 or more cards, discard half."
-			 	robberDisplay.innerHTML = "the robber is " + robber
+			 	robberDisplay.innerHTML = "The robber is " + robber
  			 	robberDisplay.style.display = 'inline';
 			} else {
 				msg.text = result;
@@ -263,20 +273,34 @@ TODO
 			diceRoll.innerHTML = result
 		}
 
+		function addPreviousRoll(num) {
+			for (i = 6; i >= 2; i--) {
+				get('previousRoll' + i).innerHTML = get('previousRoll' + (i - 1)).innerHTML
+			}
+			get('previousRoll1').innerHTML = num;
+		}
+
+		function clearPreviousRolls() {
+			for (i = 6; i >= 1; i--) {
+				get('previousRoll' + i).innerHTML = ''
+			}
+		}
+
 		function pause() {
 			paused = true;
 			pauseButton.innerHTML = 'RESUME';
-			pauseButton.style.backgroundColor = 'orange';
+			pauseButton.style.backgroundColor = 'lightsalmon';
 		}
 
-		function unpause() {
+		function resume() {
 			paused = false;
 			pauseButton.innerHTML = 'PAUSE';
-			pauseButton.style.backgroundColor = 'mediumpurple';
+			pauseButton.style.backgroundColor = 'salmon';
 		}
 
 		function restart() {
 			gameStarted = false;
+			clearPreviousRolls();
 			startButton.style.display = 'inline';
 			skipButton.style.display = 'none';
 			pauseButton.style.display = 'none';
@@ -284,14 +308,14 @@ TODO
 			timer.style.display = 'none'
 			robberDisplay.style.display = 'none';
 			diceRoll.style.display = 'none'
-			//diceRoll.innerHTML = '...'
-			unpause()
+			diceRoll.innerHTML = '...'
+			resume()
 		}
 
 		function getPlayers() {
 			let players = []
 			for (i = 1; i <= numPlayers; i++) {
-				players[i - 1] = get('player' + i + 'input').value
+				players[i - 1] = get('player' + i + 'input').value	
 			}
 			return players
 		}
