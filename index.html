@@ -1,24 +1,17 @@
 <!--
-       _..._                                                             .-'''-.                                                             
-    .-'_..._''.                                                         '   _    \                                                           
-  .' .'      '.\                               _..._                  /   /` '.   \                                __  __   ___              
- / .'                                        .'     '.               .   |     \  '                               |  |/  `.'   `.            
-. '                           .|            .   .-.   .              |   '      |  '             .-,.--.          |   .-.  .-.   '           
-| |                 __      .' |_     __    |  '   '  | ,.----------.\    \     / /,.----------. |  .-. |    __   |  |  |  |  |  |    __     
-| |              .:--.'.  .'     | .:--.'.  |  |   |  |//            \`.   ` ..' ///            \| |  | | .:--.'. |  |  |  |  |  | .:--.'.   
-. '             / |   \ |'--.  .-'/ |   \ | |  |   |  |\\            /   '-...-'` \\            /| |  | |/ |   \ ||  |  |  |  |  |/ |   \ |  
- \ '.          .`" __ | |   |  |  `" __ | | |  |   |  | `'----------'              `'----------' | |  '- `" __ | ||  |  |  |  |  |`" __ | |  
-  '. `._____.-'/ .'.''| |   |  |   .'.''| | |  |   |  |                                          | |      .'.''| ||__|  |__|  |__| .'.''| |  
-    `-.______ / / /   | |_  |  '.'/ /   | |_|  |   |  |                                          | |     / /   | |_               / /   | |_ 
-             `  \ \._,\ '/  |   / \ \._,\ '/|  |   |  |                                          |_|     \ \._,\ '/               \ \._,\ '/ 
-                 `--'  `"   `'-'   `--'  `" '--'   '--'                                                   `--'  `"                 `--'  `"  
-
-
+   ______      __                                ____                        __
+  / ____/___ _/ /_____ _____        ____        / __ \____ _____ ___  ____ _/ /
+ / /   / __ `/ __/ __ `/ __ \______/ __ \______/ /_/ / __ `/ __ `__ \/ __ `/ / 
+/ /___/ /_/ / /_/ /_/ / / / /_____/ /_/ /_____/ _, _/ /_/ / / / / / / /_/ /_/  
+\____/\__,_/\__/\__,_/_/ /_/      \____/     /_/ |_|\__,_/_/ /_/ /_/\__,_(_)   
+                                                                               
 CATAN-O-RAMA
 
 TODO:
 put restart button a bit aways
 Rules options- something else?
+use audio for number calls
+option to hide countdown 
  -->
 
 <!DOCTYPE html>
@@ -39,11 +32,10 @@ Rules options- something else?
 	<h1>
 		<img src="explosion.gif">
 		<i>Catan-o-Rama!</i>
-		
 		<img src="explosion.gif">
 	</h1>
 	<div>
-		
+		<i>Catan-o-Rama!</i> combines the fun of Catan with the anxiety of a trading floor during a market collapse
 	</div>	
 	<br>
 	<div style='width: 900px; margin: auto;'>
@@ -72,10 +64,11 @@ Rules options- something else?
 				</div>
 				<br>
 				<div id="diceRoll" style="font-size: 100px;">
-					...
 				</div>
 				<br>
-				<div id='robberDisplay'></div>
+				<div id='robberDisplay'>
+					<br><br>
+				</div>
 				<div>
 					<button id='startButton', style="background-color: red; font-size: 70px">
 						START
@@ -96,39 +89,55 @@ Rules options- something else?
 				<h3>Previous Rolls</h3>
 				<div>
 					<div id = previousRoll1 style="opacity: 100%;"></div>
-					<div id = previousRoll2 style="opacity: 77%;"></div>
-					<div id = previousRoll3 style="opacity: 55%;"></div>
-					<div id = previousRoll4 style="opacity: 33%;"></div>
-					<div id = previousRoll5 style="opacity: 22%;"></div>
-					<div id = previousRoll6 style="opacity: 5%;"></div>
+					<div id = previousRoll2 style="opacity: 80%;"></div>
+					<div id = previousRoll3 style="opacity: 60%;"></div>
+					<div id = previousRoll4 style="opacity: 40%;"></div>
+					<div id = previousRoll5 style="opacity: 20%;"></div>
+					<div id = previousRoll6 style="opacity: 7%;"></div>
 				</div>
 			</div>
 		</div>
-
-
-		<!-- Rules & Options -->
+		
 		<br>
-		<br>
+
 
 		<img src="fire.gif">
+		<!-- Rules & Options -->
+
+		<details open style="background-color: lightgray;">
+	    	<summary><b>Rules</b></summary>
+	    	<div style="text-align: left">
+				<p>• The opening phase, where everyone places their initial settlements and roads, is unchanged from normal Catan.</p>
+				<p>• Once that is done, enter player names, and hit 'START'. This kicks off a timer that automatically rolls the dice every 15 seconds. On each dice roll, players collect resources as they would normally.</p>
+				<p>• There are no turns. Any player can build, trade, or play development cards as if it were their turn, at any time.</p>
+				<p>• When a 7 is rolled, the player who gets to place the robber will be automatically determined.</p>
+				<p>• If a player rolls a 7 or plays a knight card, no one else can play a knight card until the robber attack is finished. 
+				<p>• However if there's a dice roll before a robber attack is finished, the robber goes to the desert and the player forfeits their right to the attack. If they've placed the robber but haven’t stolen a resource, the robber remains but they don't get a resource.</p>
+				<!-- chaotic variation: anyone can play knight card at any time, but latter knights always override previous.  -->
+				<p>• In case of a building dispute, priority goes to whoever placed the gamepiece first.</p>
+	    		<!-- <p>• If all players agree, you can hit 'SKIP' to skip to the next dice roll. </p> -->
+	    		<p>Otherwise, gameplay is the same as normal Catan.</p>
+    		</div>
+		</details>
 		<details closed style="background-color: lightgray; overflow: auto">
 	    	<summary><b>Options</b></summary>
+	    	<br>
 			<div style="float: left; padding-left: 20px; padding-right: 20px">
 				Roll Interval: <br>
 				<input id="rollInterval" type="range" min="1" max="30" value="15" class="slider" id="myRange" oninput="this.nextElementSibling.value = this.value">
 				<output>15</output>
 			</div>
-			<div style="float: right; padding-left: 20px; padding-right: 20px">
+			<div style="float: left; padding-left: 20px; padding-right: 20px">
 	    		Robber Selection:
 	    		<select id="robberMode">
 				  <option value="random">Random</option>
 				  <option value="cycle">Cycle</option>
 				</select>
 			</div>
-	    	<!-- <div style="float: left; padding-left: 20px; padding-right: 20px">
+	    	<div style="float: left; padding-left: 20px; padding-right: 20px">
 	    		Show countdown?
-				<input type="checkbox" checked="true">
-			</div> -->
+				<input id="showTimer" type="checkbox" checked="true">
+			</div>
 			<!-- 
 				Other ideas
 				Randomize wait time?
@@ -141,24 +150,10 @@ Rules options- something else?
 			</p>
 		</details>
 		<br>
-		<details open style="background-color: lightgray;">
-	    	<summary><b>Rules</b></summary>
-	    	<div style="text-align: left">
-				<p>• The opening phase, where everyone places their initial settlements and roads, is unchanged from normal Catan.</p>
-				<p>• When that's done, enter player names and hit 'START'. This kicks off a timer that automatically rolls the dice every 15 seconds. On each dice roll, players collect resources as they would normally. </p>
-				<p>• There are no turns. Any player can build, trade, or play development cards as if it were their turn, at any time. </p>
-				<p>• When a 7 is rolled, the player who gets to place the robber will be randomly determined. (This can be cycle or random)</p>
-				<p>• When a player plays a knight card or rolls a 7, no one else can play a knight card until the robber attack is finished. However, if there's another dice roll before they finish the attack, the robber goes to the desert. If they've placed the robber but haven’t yet stolen a resource, the robber remains but they don't get a resource.</p>
-				<!-- chaotic variation: anyone can play knight card at any time, but latter knights always override previous.  -->
-				<p>• When building, priority goes to whoever places the gamepiece first. Players must pay the build cost before placing a gamepiece.</p>
-	    		<p>• If all players agree, you can hit 'SKIP' to skip to the next dice roll. </p>
-	    		<p>• Otherwise, gameplay is the same as normal Catan. </p>
-    		</div>
-		</details>
+		
 		<br>
 		
 		<br><br>
-		<!-- <img src="fire.gif"> -->
 	</div>
 
 	
@@ -180,6 +175,7 @@ Rules options- something else?
 		let addPlayer = get('addPlayer')
 		let removePlayer = get('removePlayer')
 		let timer = get('timer');
+		let showTimer = get('showTimer')
 		let diceRoll = get('diceRoll')
 		let startButton = get('startButton')
 		let skipButton = get('skipButton')
@@ -192,13 +188,13 @@ Rules options- something else?
 		let diceRollAudio = new Audio();
 		diceRollAudio.src = 'dice.mp3'
 
-		let boomAudio = new Audio();
-		boomAudio.src = 'explosion.mp3'
+		// let punchAudio = new Audio();
+		// punchAudio.src = 'punch2.wav'
 		
 		addPlayer.onclick = () => {
-	        numPlayers++
+	      numPlayers++
 			let newPlayerItem = document.createElement("div");
-			//newPlayerItem.id = "player" + numPlayers
+			newPlayerItem.id = "player" + numPlayers
 			newPlayerItem.innerHTML = "Player " + numPlayers + ": "
 			newPlayerItem.id = "player" + numPlayers
 			let newPlayerInput = document.createElement("input");
@@ -221,16 +217,17 @@ Rules options- something else?
 		}
 
 		startButton.onclick = () => {
-			boomAudio.currentTime = 0
-			boomAudio.play()
+			//punchAudio.currentTime = 0
+			//punchAudio.play()
+			robberDisplay.style.display = 'inline';
 			startButton.style.display = 'none';
 			skipButton.style.display = 'inline';
 			pauseButton.style.display = 'inline';
 			restartButton.style.display = 'inline';
 			timer.style.display = 'inline'
 			diceRoll.style.display = 'inline-block'
-			secondsLeft = 4
 			gameStarted = true;
+			secondsLeft = 1
 			startTimer();
 		}
 
@@ -265,7 +262,12 @@ Rules options- something else?
 				} else {
 					secondsLeft--
 				}
-				timer.innerHTML = secondsLeft
+				if (showTimer.checked) {
+					timer.innerHTML = secondsLeft
+					timer.style.visibility = 'visible'
+				} else {
+					timer.style.visibility = 'hidden'
+				}
 				await delay(1000);
 			}
 			timerStarted = false;
@@ -274,7 +276,7 @@ Rules options- something else?
 		function rollDice() {
 			diceRollAudio.currentTime = 0
 			diceRollAudio.play()
-			if (diceRoll.innerHTML != "...") {
+			if (diceRoll.innerHTML != "") {
 				addPreviousRoll(diceRoll.innerHTML)
 			}
 			let result = 2 + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6);
@@ -290,10 +292,10 @@ Rules options- something else?
 				robber = players[robberIndex] ? players[robberIndex] : "Player " + (robberIndex + 1)
 			 	msg.text = "7! The robber is! " + robber + "! Anyone with 8 or more cards, discard half."
 			 	robberDisplay.innerHTML = "The Robber is <b>" + robber + "</b><br> Anyone with 8 or more cards, discard half"
- 			 	robberDisplay.style.display = 'inline';
+ 			 	robberDisplay.style.visibility = 'visible';
 			} else {
 				msg.text = result;
-				robberDisplay.style.display = 'none';
+				robberDisplay.style.visibility = 'hidden';
 			}
 			window.speechSynthesis.speak(msg);
 			diceRoll.innerHTML = result
@@ -334,7 +336,6 @@ Rules options- something else?
 			timer.style.display = 'none'
 			robberDisplay.style.display = 'none';
 			diceRoll.style.display = 'none'
-			diceRoll.innerHTML = '...'
 			resume()
 		}
 
