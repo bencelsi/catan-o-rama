@@ -8,10 +8,11 @@
 CATAN-O-RAMA
 
 TODO:
-put restart button a bit aways
+put restart button a bit awayss
 Rules options- something else?
 use audio for number calls
-option to hide countdown 
+Option to randomize delay time
+Sound effect for robber - bell dong
  -->
 
 <!DOCTYPE html>
@@ -20,7 +21,10 @@ option to hide countdown
 	<title>Catan-o-Rama!</title>
 	<link rel='icon' type='image/x-icon' href='favicon.ico'>
 	<style type="text/css">
-		button{
+		button {
+			font-size: 30px;
+		}
+		.previousRoll {
 			font-size: 30px;
 		}
 	</style>
@@ -52,10 +56,12 @@ option to hide countdown
 						Player 2: <input id=player2input>
 					</div>
 				</div>
+				<br>
 				<div>
 					<button id='addPlayer'>+</button>
 					<button id='removePlayer' disabled>-</button>
 				</div>
+				<br>
 			</div>
 			
 			<div style="width: 50%;">
@@ -88,12 +94,10 @@ option to hide countdown
 			<div style="float: right; width: 25%; background-color: lightgray;">
 				<h3>Previous Rolls</h3>
 				<div>
-					<div id = previousRoll1 style="opacity: 100%;"></div>
-					<div id = previousRoll2 style="opacity: 80%;"></div>
-					<div id = previousRoll3 style="opacity: 60%;"></div>
-					<div id = previousRoll4 style="opacity: 40%;"></div>
-					<div id = previousRoll5 style="opacity: 20%;"></div>
-					<div id = previousRoll6 style="opacity: 7%;"></div>
+					<div id="previousRoll1" class="previousRoll" style="opacity: 100%;"></div>
+					<div id="previousRoll2" class="previousRoll" style="opacity: 65%;"></div>
+					<div id="previousRoll3" class="previousRoll" style="opacity: 30%;"></div>
+					<div id="previousRoll4" class="previousRoll" style="opacity: 10%;"></div>
 				</div>
 			</div>
 		</div>
@@ -107,13 +111,13 @@ option to hide countdown
 	    	<summary><b>Rules</b></summary>
 	    	<div style="text-align: left">
 				<p> • The game starts the same as normal Catan, with everyone placing their initial settlements and roads.
-				<p> • Next, enter the players' names and hit 'START'. This kicks off a timer that automatically rolls the dice every 15 seconds. On each dice roll, players collect resources as they would normally.</p>
+				<p> • Next, enter players' names, and hit "START". This kicks off a timer that automatically rolls the dice every 15 seconds. On each dice roll, players collect resources as they would normally.</p>
 				<p> • There are no turns. Any player can build, trade, or play development cards at any time.</p>
 				<p> • There is no upper limit on how many cards you can have in your hand.</p>
 				<p> • When a 7 is rolled, the player who gets to place the robber will be automatically determined and announced.	</p>
 				<p> • When someone rolls a 7 or plays a knight card, no one else can play a knight card until the robber attack is finished. However, if there's another dice roll before the attack is finished, the robber goes to the desert and the player forfeits their right to the attack. If they've placed the robber but haven’t yet stolen a resource, the robber remains but they don't get a resource.</p>
 				<!-- chaotic variation: anyone can play knight card at any time, but latter knights always override previous.  -->
-				<p>• In case of a building dispute, priority goes to whoever placed the gamepiece first.</p>
+				<p> • In case of a building dispute, priority goes to whoever placed the gamepiece first. Further disputes should be solved with violence.</p>
 	    		<!-- <p>• If all players agree, you can hit 'SKIP' to skip to the next dice roll. </p> -->
 	    		<p>Otherwise, gameplay is the same as normal Catan.</p>
     		</div>
@@ -154,207 +158,211 @@ option to hide countdown
 		
 		<br><br>
 	</div>
-
-	
 <!-- 			-->
 <!--	SCRIPT	-->
 <!--  			-->
 
-	<script>
-		let players = [];
-		let rollHistory = []
-		let gameStarted = false;
-		let paused = false;
-		let timerOn 
-		let waitTime = 15;
-		let secondsLeft = 4;
-		let timerStarted = false;
+<script>
 
-		let playerInputs = get('playerInputs')
-		let addPlayer = get('addPlayer')
-		let removePlayer = get('removePlayer')
-		let timer = get('timer');
-		let showTimer = get('showTimer')
-		let diceRoll = get('diceRoll')
-		let startButton = get('startButton')
-		let skipButton = get('skipButton')
-		let pauseButton = get('pauseButton');
-		let restartButton = get('restartButton')
-		let numPlayers = 2
-		let robberIndex = -1
+if (location.hostname === "") {
+	document.title = "." + document.title
+}
+let players = [];
+let rollHistory = []
+let gameStarted = false;
+let paused = false;
+let timerOn 
+let waitTime = 15;
+let secondsLeft = 4;
+let timerStarted = false;
 
-		restart()
-		let diceRollAudio = new Audio();
-		diceRollAudio.src = 'dice.mp3'
+let playerInputs = get('playerInputs')
+let addPlayer = get('addPlayer')
+let removePlayer = get('removePlayer')
+let timer = get('timer');
+let showTimer = get('showTimer')
+let diceRoll = get('diceRoll')
+let startButton = get('startButton')
+let skipButton = get('skipButton')
+let pauseButton = get('pauseButton');
+let restartButton = get('restartButton')
+let numPlayers = 2
+let robberIndex = -1
 
-		// let punchAudio = new Audio();
-		// punchAudio.src = 'punch2.wav'
-		
-		addPlayer.onclick = () => {
-	      numPlayers++
-			let newPlayerItem = document.createElement("div");
-			newPlayerItem.id = "player" + numPlayers
-			newPlayerItem.innerHTML = "Player " + numPlayers + ": "
-			newPlayerItem.id = "player" + numPlayers
-			let newPlayerInput = document.createElement("input");
-			newPlayerInput.id = "player" + numPlayers + 'input'
-			newPlayerItem.appendChild(newPlayerInput)
-	        playerInputs.appendChild(newPlayerItem);
-	        removePlayer.disabled = false;
-	        if (numPlayers == 8) {
-	        	addPlayer.disabled = true;
-	        }
-		}
 
-		removePlayer.onclick = () => {
-			playerInputs.removeChild(get("player" + numPlayers))
-			numPlayers--
-			addPlayer.disabled = false;
-			if (numPlayers == 2) {
-				removePlayer.disabled = true; 
-			}
-		}
+restart()
+let diceRollAudio = new Audio();
+diceRollAudio.src = 'dice.mp3'
 
-		startButton.onclick = () => {
-			//punchAudio.currentTime = 0
-			//punchAudio.play()
-			robberDisplay.style.display = 'inline';
-			startButton.style.display = 'none';
-			skipButton.style.display = 'inline';
-			pauseButton.style.display = 'inline';
-			restartButton.style.display = 'inline';
-			timer.style.display = 'inline'
-			diceRoll.style.display = 'inline-block'
-			gameStarted = true;
-			secondsLeft = 1
-			startTimer();
-		}
+// let punchAudio = new Audio();
+// punchAudio.src = 'punch2.wav'
 
-		skipButton.onclick = () => {
-			secondsLeft = get('rollInterval').value
-			timer.innerHTML = get('rollInterval').value
+addPlayer.onclick = () => {
+	numPlayers++
+	let newPlayerItem = document.createElement("div");
+	newPlayerItem.id = "player" + numPlayers
+	newPlayerItem.innerHTML = "Player " + numPlayers + ": "
+	newPlayerItem.id = "player" + numPlayers
+	let newPlayerInput = document.createElement("input");
+	newPlayerInput.id = "player" + numPlayers + 'input'
+	newPlayerItem.appendChild(newPlayerInput)
+	playerInputs.appendChild(newPlayerItem);
+	removePlayer.disabled = false;
+	if (numPlayers == 8) {
+		addPlayer.disabled = true;
+	}
+}
+
+removePlayer.onclick = () => {
+	playerInputs.removeChild(get("player" + numPlayers))
+	numPlayers--
+	addPlayer.disabled = false;
+	if (numPlayers == 2) {
+		removePlayer.disabled = true; 
+	}
+}
+
+startButton.onclick = () => {
+	//punchAudio.currentTime = 0
+	//punchAudio.play()
+	robberDisplay.style.display = 'inline';
+	startButton.style.display = 'none';
+	skipButton.style.display = 'inline';
+	pauseButton.style.display = 'inline';
+	restartButton.style.display = 'inline';
+	timer.style.display = 'inline'
+	diceRoll.style.display = 'inline-block'
+	gameStarted = true;
+	secondsLeft = 1
+	startTimer();
+}
+
+skipButton.onclick = () => {
+	secondsLeft = get('rollInterval').value
+	timer.innerHTML = get('rollInterval').value
+	rollDice()
+}
+
+pauseButton.onclick = () => {
+	if (paused) {
+		resume()
+		startTimer()
+	} else {
+		pause()
+	}
+}
+
+restartButton.onclick = () => {
+	restart()
+}
+
+async function startTimer() {
+	if (timerStarted) {
+		return
+	}
+	timerStarted = true;
+	while (gameStarted & !paused) {
+		if (secondsLeft == 1) {
 			rollDice()
+			secondsLeft = get('rollInterval').value
+		} else {
+			secondsLeft--
 		}
+		if (showTimer.checked) {
+			timer.innerHTML = secondsLeft
+			timer.style.visibility = 'visible'
+		} else {
+			timer.style.visibility = 'hidden'
+		}
+		await delay(1000);
+	}
+	timerStarted = false;
+}
 
-		pauseButton.onclick = () => {
-			if (paused) {
-				resume()
-				startTimer()
-			} else {
-				pause()
-			}
+function rollDice() {
+	diceRollAudio.currentTime = 0
+	diceRollAudio.play()
+	if (diceRoll.innerHTML != "") {
+		addPreviousRoll(diceRoll.innerHTML)
+	}
+	let result = 2 + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6);
+	var msg = new SpeechSynthesisUtterance();
+	
+	if (result == 7) {
+		let players = getPlayers()
+		if (get("robberMode").value == 'random' || robberIndex === -1) {
+			robberIndex = Math.floor(Math.random() * numPlayers)
+		} else {
+			robberIndex = robberIndex < numPlayers - 1 ? robberIndex + 1 : 0;
 		}
+		robber = players[robberIndex] ? players[robberIndex] : "Player " + (robberIndex + 1)
+		msg.text = "7! The robber is! " + robber + "!"
+		robberDisplay.innerHTML = "The Robber is <b>" + robber + "</b>"
+		robberDisplay.style.visibility = 'visible';
+	} else {
+		msg.text = result;
+		robberDisplay.style.visibility = 'hidden';
+	}
+	window.speechSynthesis.speak(msg);
+	diceRoll.innerHTML = result
+}
 
-		restartButton.onclick = () => {
-			restart()
-		}
+function addPreviousRoll(num) {
+	for (i = 4; i >= 2; i--) {
+		get('previousRoll' + i).innerHTML = get('previousRoll' + (i - 1)).innerHTML
+	}
+	get('previousRoll1').innerHTML = num;
+}
 
-		async function startTimer() {
-			if (timerStarted) {
-				return
-			}
-			timerStarted = true;
-			while (gameStarted & !paused) {
-				if (secondsLeft == 1) {
-					rollDice()
-					secondsLeft = get('rollInterval').value
-				} else {
-					secondsLeft--
-				}
-				if (showTimer.checked) {
-					timer.innerHTML = secondsLeft
-					timer.style.visibility = 'visible'
-				} else {
-					timer.style.visibility = 'hidden'
-				}
-				await delay(1000);
-			}
-			timerStarted = false;
-		}
+function clearPreviousRolls() {
+	for (i = 4; i >= 1; i--) {
+		get('previousRoll' + i).innerHTML = ''
+	}
+}
 
-		function rollDice() {
-			diceRollAudio.currentTime = 0
-			diceRollAudio.play()
-			if (diceRoll.innerHTML != "") {
-				addPreviousRoll(diceRoll.innerHTML)
-			}
-			let result = 2 + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6);
-			var msg = new SpeechSynthesisUtterance();
-			
-			if (result == 7) {
-				let players = getPlayers()
-				if (get("robberMode").value == 'random' || robberIndex === -1) {
-					robberIndex = Math.floor(Math.random() * numPlayers)
-				} else {
-					robberIndex = robberIndex < numPlayers - 1 ? robberIndex + 1 : 0;
-				}
-				robber = players[robberIndex] ? players[robberIndex] : "Player " + (robberIndex + 1)
-			 	msg.text = "7! The robber is! " + robber + "!"
-			 	robberDisplay.innerHTML = "The Robber is <b>" + robber + "</b>"
- 			 	robberDisplay.style.visibility = 'visible';
-			} else {
-				msg.text = result;
-				robberDisplay.style.visibility = 'hidden';
-			}
-			window.speechSynthesis.speak(msg);
-			diceRoll.innerHTML = result
-		}
+function pause() {
+	paused = true;
+	pauseButton.innerHTML = 'RESUME';
+	pauseButton.style.backgroundColor = 'lightsalmon';
+}
 
-		function addPreviousRoll(num) {
-			for (i = 6; i >= 2; i--) {
-				get('previousRoll' + i).innerHTML = get('previousRoll' + (i - 1)).innerHTML
-			}
-			get('previousRoll1').innerHTML = num;
-		}
+function resume() {
+	paused = false;
+	pauseButton.innerHTML = 'PAUSE';
+	pauseButton.style.backgroundColor = 'salmon';
+}
 
-		function clearPreviousRolls() {
-			for (i = 6; i >= 1; i--) {
-				get('previousRoll' + i).innerHTML = ''
-			}
-		}
+function restart() {
+	gameStarted = false;
+	clearPreviousRolls();
+	startButton.style.display = 'inline';
+	skipButton.style.display = 'none';
+	pauseButton.style.display = 'none';
+	restartButton.style.display = 'none';
+	timer.style.display = 'none'
+	robberDisplay.style.display = 'none';
+	diceRoll.style.display = 'none'
+	resume()
+}
 
-		function pause() {
-			paused = true;
-			pauseButton.innerHTML = 'RESUME';
-			pauseButton.style.backgroundColor = 'lightsalmon';
-		}
+function getPlayers() {
+	let players = []
+	for (i = 1; i <= numPlayers; i++) {
+		players[i - 1] = get('player' + i + 'input').value	
+	}
+	return players
+}
 
-		function resume() {
-			paused = false;
-			pauseButton.innerHTML = 'PAUSE';
-			pauseButton.style.backgroundColor = 'salmon';
-		}
+function delay(milliseconds){
+	return new Promise(resolve => {
+		setTimeout(resolve, milliseconds);
+	});
+}
 
-		function restart() {
-			gameStarted = false;
-			clearPreviousRolls();
-			startButton.style.display = 'inline';
-			skipButton.style.display = 'none';
-			pauseButton.style.display = 'none';
-			restartButton.style.display = 'none';
-			timer.style.display = 'none'
-			robberDisplay.style.display = 'none';
-			diceRoll.style.display = 'none'
-			resume()
-		}
+function get(id) {
+	return document.getElementById(id);
+}
 
-		function getPlayers() {
-			let players = []
-			for (i = 1; i <= numPlayers; i++) {
-				players[i - 1] = get('player' + i + 'input').value	
-			}
-			return players
-		}
-
-		function delay(milliseconds){
-		    return new Promise(resolve => {
-		        setTimeout(resolve, milliseconds);
-		    });
-		}
-		
-		function get(id) {
-			return document.getElementById(id);
-		}
-	</script>
+</script>
 </body>
 </html>
