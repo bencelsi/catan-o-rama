@@ -5,24 +5,24 @@
 / /___/ /_/ / /_/ /_/ / / / /_____/ /_/ /_____/ _, _/ /_/ / / / / / / /_/ /_/  
 \____/\__,_/\__/\__,_/_/ /_/      \____/     /_/ |_|\__,_/_/ /_/ /_/\__,_(_)   
                                                                                
-CATAN-O-RAMA
-
 TODO:
-put restart button a bit awayss
 Rules options- something else?
 use audio for number calls
 Option to randomize delay time
-Sound effect for robber - bell dong
- -->
-
+-->
 <!DOCTYPE html>
 <html>
 <head>
 	<title>Catan-o-Rama!</title>
 	<link rel='icon' type='image/x-icon' href='favicon.ico'>
 	<style type="text/css">
+		body {
+			text-align: center;
+			background-color: white;
+		}
 		button {
 			font-size: 30px;
+			margin: 10px;
 		}
 		.previousRoll {
 			font-size: 30px;
@@ -30,9 +30,7 @@ Sound effect for robber - bell dong
 	</style>
 </head>
 
-<body style="
-		text-align: center; 
-		background-color: white;">
+<body>
 	<h1>
 		<img src="explosion.gif">
 		<i>Catan-o-Rama!</i>
@@ -43,7 +41,6 @@ Sound effect for robber - bell dong
 	</div>	
 	<br>
 	<div style='width: 900px; margin: auto;'>
-		
 		<br><br>
 		<div style="display: flex; width: 900px;">
 			<div id=playerInput style=" width: 25%; background-color: lightgray;">
@@ -103,23 +100,20 @@ Sound effect for robber - bell dong
 		</div>
 		<br>
 
-
-		<img src="fire.gif">
 		<!-- Rules & Options -->
 
 		<details open style="background-color: lightgray;">
 	    	<summary><b>Rules</b></summary>
 	    	<div style="text-align: left">
-				<p> • The game starts the same as normal Catan, with everyone placing their initial settlements and roads.
-				<p> • Next, enter players' names, and hit "START". This kicks off a timer that automatically rolls the dice every 15 seconds. On each dice roll, players collect resources as they would normally.</p>
-				<p> • There are no turns. Any player can build, trade, or play development cards at any time.</p>
-				<p> • There is no upper limit on how many cards you can have in your hand.</p>
-				<p> • When a 7 is rolled, the player who gets to place the robber will be automatically determined and announced.	</p>
-				<p> • When someone rolls a 7 or plays a knight card, no one else can play a knight card until the robber attack is finished. However, if there's another dice roll before the attack is finished, the robber goes to the desert and the player forfeits their right to the attack. If they've placed the robber but haven’t yet stolen a resource, the robber remains but they don't get a resource.</p>
-				<!-- chaotic variation: anyone can play knight card at any time, but latter knights always override previous.  -->
-				<p> • In case of a building dispute, priority goes to whoever placed the gamepiece first. Further disputes should be solved with violence.</p>
+				<p> • Catan-o-Rama starts like normal Catan, with everyone placing their initial settlements and roads.
+				<p> • Next, enter player names, and hit "START". This kicks off a timer that rolls the dice every 15 seconds. On each roll, collect resources as you would normally.</p>
+				<p> • There are no turns. You can build, trade, or play development cards at any time.</p>
+				<p> • Unlike normal Catan, there's no limit on the number of cards you can have in your hand.</p>
+				<p> • When 7 is rolled, the player to place the robber is randomly selected.</p>
+				<p> • If there's a dice roll before you finish placing the robber or stealing a resource, you forfeit that ability. If the robber isn't placed, it goes to the desert. Similarly, if someone plays a knight card, any in-progress robber placements are cancelled.</p>
+				<!-- <p> • In case building disputes, priority goes to whoever placed the gamepiece first. Further disputes should be resolved with violence.</p> -->
 	    		<!-- <p>• If all players agree, you can hit 'SKIP' to skip to the next dice roll. </p> -->
-	    		<p>Otherwise, gameplay is the same as normal Catan.</p>
+	    		<p> Otherwise, gameplay is the same as normal Catan.</p>
     		</div>
 		</details>
 		<details closed style="background-color: lightgray; overflow: auto">
@@ -127,41 +121,27 @@ Sound effect for robber - bell dong
 	    	<br>
 			<div style="float: left; padding-left: 20px; padding-right: 20px">
 				Roll Interval: <br>
-				<input id="rollInterval" type="range" min="1" max="30" value="15" class="slider" id="myRange" oninput="this.nextElementSibling.value = this.value">
+				<input id="rollInterval" type="range" min="1" max="25" value="15" class="slider" id="myRange" oninput="this.nextElementSibling.value = this.value">
 				<output>15</output>
 			</div>
 			<div style="float: left; padding-left: 20px; padding-right: 20px">
-	    		Robber Selection:
-	    		<select id="robberMode">
-				  <option value="random">Random</option>
-				  <option value="cycle">Cycle</option>
-				</select>
+	    		Stack dice?
+				<input id="stackDice" type="checkbox" checked="false">
 			</div>
-	    	<div style="float: left; padding-left: 20px; padding-right: 20px">
+			<div style="float: left; padding-left: 20px; padding-right: 20px">
+	    		Stack robber?
+				<input id="stackRobber" type="checkbox" checked="false">
+			</div>
+			<div style="float: left; padding-left: 20px; padding-right: 20px">
 	    		Show countdown?
 				<input id="showTimer" type="checkbox" checked="true">
 			</div>
-			<!-- 
-				Other ideas
-				Randomize wait time?
-				Alternate voice?
-				Sound effects?
-				Longer wait on robber turns? 
-				stack dice rolls? 
-				(Restore default options) 
-			-->
 			</p>
 		</details>
-		<br>
-		
-		<br>
-		
+		<br><br>
+		<img src="fire.gif">
 		<br><br>
 	</div>
-<!-- 			-->
-<!--	SCRIPT	-->
-<!--  			-->
-
 <script>
 
 if (location.hostname === "") {
@@ -189,13 +169,19 @@ let restartButton = get('restartButton')
 let numPlayers = 2
 let robberIndex = -1
 
+let diceStack = []
+let robberStack = []
+
+let diceRollAudio = new Audio()
+diceRollAudio.src = 'dice.mp3'
+let explosionAudio = new Audio()
+explosionAudio.src = 'explosion.m4a'
+let bellAudio = new Audio()
+bellAudio.src = 'bell.mp3'
+let punchAudio = new Audio()
+punchAudio.src = 'punch.wav'
 
 restart()
-let diceRollAudio = new Audio();
-diceRollAudio.src = 'dice.mp3'
-
-// let punchAudio = new Audio();
-// punchAudio.src = 'punch2.wav'
 
 addPlayer.onclick = () => {
 	numPlayers++
@@ -208,6 +194,7 @@ addPlayer.onclick = () => {
 	newPlayerItem.appendChild(newPlayerInput)
 	playerInputs.appendChild(newPlayerItem);
 	removePlayer.disabled = false;
+	robberStack = []
 	if (numPlayers == 8) {
 		addPlayer.disabled = true;
 	}
@@ -217,14 +204,14 @@ removePlayer.onclick = () => {
 	playerInputs.removeChild(get("player" + numPlayers))
 	numPlayers--
 	addPlayer.disabled = false;
+	robberStack = []
 	if (numPlayers == 2) {
 		removePlayer.disabled = true; 
 	}
 }
 
 startButton.onclick = () => {
-	//punchAudio.currentTime = 0
-	//punchAudio.play()
+	playSound(explosionAudio)
 	robberDisplay.style.display = 'inline';
 	startButton.style.display = 'none';
 	skipButton.style.display = 'inline';
@@ -238,12 +225,14 @@ startButton.onclick = () => {
 }
 
 skipButton.onclick = () => {
+	playSound(punchAudio)
 	secondsLeft = get('rollInterval').value
 	timer.innerHTML = get('rollInterval').value
 	rollDice()
 }
 
 pauseButton.onclick = () => {
+	playSound(punchAudio)
 	if (paused) {
 		resume()
 		startTimer()
@@ -253,6 +242,7 @@ pauseButton.onclick = () => {
 }
 
 restartButton.onclick = () => {
+	playSound(punchAudio)
 	restart()
 }
 
@@ -279,26 +269,48 @@ async function startTimer() {
 	timerStarted = false;
 }
 
+
 function rollDice() {
-	diceRollAudio.currentTime = 0
-	diceRollAudio.play()
+	playSound(diceRollAudio)
 	if (diceRoll.innerHTML != "") {
 		addPreviousRoll(diceRoll.innerHTML)
 	}
-	let result = 2 + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6);
+	let result
+	if (get("stackDice").checked) {
+		if (diceStack.length == 0) {
+			for (let i = 1; i <= 6; i++) {
+				for (let j = 1; j <= 6; j++) {
+					diceStack.push(i + j)
+					console.log(i + j)
+				}
+			}
+		}
+		shuffle(diceStack)
+		result = diceStack.pop()
+	} else {
+		result = random(1, 6) + random(1, 6)
+	}
+	
 	var msg = new SpeechSynthesisUtterance();
 	
 	if (result == 7) {
+		playSound(bellAudio)
 		let players = getPlayers()
-		if (get("robberMode").value == 'random' || robberIndex === -1) {
-			robberIndex = Math.floor(Math.random() * numPlayers)
+		if (get("stackRobber").checked) {
+			if (robberStack.length === 0) {
+				for (let i = 0; i < numPlayers; i++) {
+					robberStack.push(i)
+				}
+				shuffle(robberStack)
+			}
+			robberIndex = robberStack.pop()
 		} else {
-			robberIndex = robberIndex < numPlayers - 1 ? robberIndex + 1 : 0;
+			robberIndex = random(0, numPlayers - 1)
 		}
 		robber = players[robberIndex] ? players[robberIndex] : "Player " + (robberIndex + 1)
 		msg.text = "7! The robber is! " + robber + "!"
 		robberDisplay.innerHTML = "The Robber is <b>" + robber + "</b>"
-		robberDisplay.style.visibility = 'visible';
+		robberDisplay.style.visibility = 'visible'
 	} else {
 		msg.text = result;
 		robberDisplay.style.visibility = 'hidden';
@@ -306,6 +318,18 @@ function rollDice() {
 	window.speechSynthesis.speak(msg);
 	diceRoll.innerHTML = result
 }
+
+function shuffle(array) {
+    for (i = 0; i < array.length; i++) {
+        randomIndex = random(i, array.length - 1)
+        temp = array[i]
+        array[i] = array[randomIndex]
+        array[randomIndex] = temp
+    }
+}
+
+// returns random int between min and max (inclusive)
+function random(min, max) { return (min + (Math.floor(Math.random() * (max + 1 - min)))) }
 
 function addPreviousRoll(num) {
 	for (i = 4; i >= 2; i--) {
@@ -361,6 +385,11 @@ function delay(milliseconds){
 
 function get(id) {
 	return document.getElementById(id);
+}
+
+function playSound(audio) {
+	audio.currentTime = 0
+	audio.play()
 }
 
 </script>
