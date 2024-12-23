@@ -17,17 +17,9 @@ Match '15 seconds' in rules to actual value
 	<title>Catan-o-Rama!</title>
 	<link rel='icon' type='image/x-icon' href='favicon.ico'>
 	<style type="text/css">
-		body {
-			text-align: center;
-			background-color: white;
-		}
-		button {
-			font-size: 30px;
-			margin: 10px;
-		}
-		.previousRoll {
-			font-size: 30px;
-		}
+		body { text-align: center; background-color: white; }
+		button { font-size: 30px; margin: 10px; }
+		.previousRoll { font-size: 30px; }
 	</style>
 </head>
 
@@ -145,9 +137,8 @@ Match '15 seconds' in rules to actual value
 	</div>
 <script>
 
-if (location.hostname === "") {
-	document.title = "." + document.title
-}
+if (location.hostname === "") document.title = "." + document.title
+
 let players = [];
 let rollHistory = []
 let gameStarted = false;
@@ -173,14 +164,10 @@ let robberIndex = -1
 let diceStack = []
 let robberStack = []
 
-let diceRollAudio = new Audio()
-diceRollAudio.src = 'sound/dice.mp3'
-let explosionAudio = new Audio()
-explosionAudio.src = 'sound/explosion.m4a'
-let bellAudio = new Audio()
-bellAudio.src = 'sound/bell.mp3'
-let punchAudio = new Audio()
-punchAudio.src = 'sound/punch.wav'
+let diceRollAudio = new Audio(); diceRollAudio.src = 'sound/dice.mp3'
+let explosionAudio = new Audio(); explosionAudio.src = 'sound/explosion.m4a'
+let bellAudio = new Audio(); bellAudio.src = 'sound/bell.mp3'
+let punchAudio = new Audio(); punchAudio.src = 'sound/punch.wav'
 
 restart()
 
@@ -196,9 +183,7 @@ addPlayer.onclick = () => {
 	playerInputs.appendChild(newPlayerItem);
 	removePlayer.disabled = false;
 	robberStack = []
-	if (numPlayers == 8) {
-		addPlayer.disabled = true;
-	}
+	if (numPlayers == 8) addPlayer.disabled = true;
 }
 
 removePlayer.onclick = () => {
@@ -206,9 +191,7 @@ removePlayer.onclick = () => {
 	numPlayers--
 	addPlayer.disabled = false;
 	robberStack = []
-	if (numPlayers == 2) {
-		removePlayer.disabled = true; 
-	}
+	if (numPlayers == 2) removePlayer.disabled = true; 
 }
 
 startButton.onclick = () => {
@@ -235,17 +218,13 @@ skipButton.onclick = () => {
 pauseButton.onclick = () => {
 	playSound(punchAudio)
 	if (paused) {
-		resume()
-		startTimer()
+		resume(); startTimer()
 	} else {
 		pause()
 	}
 }
 
-restartButton.onclick = () => {
-	playSound(punchAudio)
-	restart()
-}
+restartButton.onclick = () => { playSound(punchAudio); restart() }
 
 async function startTimer() {
 	if (timerStarted) {
@@ -254,8 +233,7 @@ async function startTimer() {
 	timerStarted = true;
 	while (gameStarted & !paused) {
 		if (secondsLeft == 1) {
-			rollDice()
-			secondsLeft = get('rollInterval').value
+			rollDice(); secondsLeft = get('rollInterval').value
 		} else {
 			secondsLeft--
 		}
@@ -273,9 +251,8 @@ async function startTimer() {
 
 function rollDice() {
 	playSound(diceRollAudio)
-	if (diceRoll.innerHTML != "") {
-		addPreviousRoll(diceRoll.innerHTML)
-	}
+	if (diceRoll.innerHTML != "") addPreviousRoll(diceRoll.innerHTML)
+	
 	let result
 	if (get("stackDice").checked) {
 		if (diceStack.length == 0) {
