@@ -4,7 +4,6 @@ interval=20
 declare -a players=("eve" "david" "lolita" "anny" "ben")
  
 #SETTINGS
-
 #	TOGGLES - (under settings menu)
 #	turnless mode
 #	wait time
