@@ -22,7 +22,6 @@ Match '15 seconds' in rules to actual value
 		.previousRoll { font-size: 30px; }
 	</style>
 </head>
-
 <body>
 	<h1>
 		<img src="gif/explosion.gif">
@@ -118,15 +117,15 @@ Match '15 seconds' in rules to actual value
 				<output>15</output>
 			</div>
 			<div style="float: left; padding-left: 20px; padding-right: 20px">
-	    		Stack dice?
+	    		Stack Dice?
 				<input id="stackDice" type="checkbox" checked="false">
 			</div>
 			<div style="float: left; padding-left: 20px; padding-right: 20px">
-	    		Stack robber?
+	    		Stack Robber?
 				<input id="stackRobber" type="checkbox" checked="false">
 			</div>
 			<div style="float: left; padding-left: 20px; padding-right: 20px">
-	    		Show countdown?
+	    		Show Countdown?
 				<input id="showTimer" type="checkbox" checked="true">
 			</div>
 			</p>
@@ -169,6 +168,11 @@ let explosionAudio = new Audio(); explosionAudio.src = 'sound/explosion.m4a'
 let bellAudio = new Audio(); bellAudio.src = 'sound/bell.mp3'
 let punchAudio = new Audio(); punchAudio.src = 'sound/punch.wav'
 
+let music = new Audio(); 
+music.loop = true; 
+music.src = 'sound/Template.mp3'
+music.volume = .75
+
 restart()
 
 addPlayer.onclick = () => {
@@ -196,6 +200,7 @@ removePlayer.onclick = () => {
 
 startButton.onclick = () => {
 	playSound(explosionAudio)
+	music.play()
 	robberDisplay.style.display = 'inline';
 	startButton.style.display = 'none';
 	skipButton.style.display = 'inline';
@@ -217,14 +222,11 @@ skipButton.onclick = () => {
 
 pauseButton.onclick = () => {
 	playSound(punchAudio)
-	if (paused) {
-		resume(); startTimer()
-	} else {
-		pause()
-	}
+	if (paused) { resume(); startTimer() }
+	else { pause() }
 }
 
-restartButton.onclick = () => { playSound(punchAudio); restart() }
+restartButton.onclick = () => { playSound(punchAudio); restart();}
 
 async function startTimer() {
 	if (timerStarted) {
@@ -322,12 +324,14 @@ function clearPreviousRolls() {
 }
 
 function pause() {
+	music.pause()
 	paused = true;
 	pauseButton.innerHTML = 'RESUME';
 	pauseButton.style.backgroundColor = 'lightsalmon';
 }
 
 function resume() {
+	music.play()
 	paused = false;
 	pauseButton.innerHTML = 'PAUSE';
 	pauseButton.style.backgroundColor = 'salmon';
@@ -344,6 +348,8 @@ function restart() {
 	robberDisplay.style.display = 'none';
 	diceRoll.style.display = 'none'
 	resume()
+	music.pause()
+	music.currentTime = 0
 }
 
 function getPlayers() {
