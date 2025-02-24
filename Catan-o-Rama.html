@@ -118,15 +118,19 @@ Match '15 seconds' in rules to actual value
 			</div>
 			<div style="float: left; padding-left: 20px; padding-right: 20px">
 	    		Stack Dice?
-				<input id="stackDice" type="checkbox" checked="false">
+				<input id="stackDice" type="checkbox" >
 			</div>
 			<div style="float: left; padding-left: 20px; padding-right: 20px">
 	    		Stack Robber?
-				<input id="stackRobber" type="checkbox" checked="false">
+				<input id="stackRobber" type="checkbox" >
 			</div>
 			<div style="float: left; padding-left: 20px; padding-right: 20px">
 	    		Show Countdown?
-				<input id="showTimer" type="checkbox" checked="true">
+				<input id="showTimer" type="checkbox" checked>
+			</div>
+			<div style="float: left; padding-left: 20px; padding-right: 20px">
+	    		Music?
+				<input id="musicButton" type="checkbox" checked>
 			</div>
 			</p>
 		</details>
@@ -147,16 +151,23 @@ let waitTime = 15;
 let secondsLeft = 4;
 let timerStarted = false;
 
-let playerInputs = get('playerInputs')
-let addPlayer = get('addPlayer')
-let removePlayer = get('removePlayer')
-let timer = get('timer');
-let showTimer = get('showTimer')
-let diceRoll = get('diceRoll')
-let startButton = get('startButton')
-let skipButton = get('skipButton')
-let pauseButton = get('pauseButton');
-let restartButton = get('restartButton')
+const playerInputs = get('playerInputs')
+const addPlayer = get('addPlayer')
+const removePlayer = get('removePlayer')
+const timer = get('timer');
+const showTimer = get('showTimer')
+const diceRoll = get('diceRoll')
+const startButton = get('startButton')
+const skipButton = get('skipButton')
+const pauseButton = get('pauseButton');
+const restartButton = get('restartButton')
+const MUSIC_BUTTON = get('musicButton')
+
+
+MUSIC_BUTTON.onchange = () => {
+	if (MUSIC_BUTTON.checked) music.play()
+	else music.pause()
+}
 let numPlayers = 2
 let robberIndex = -1
 
@@ -168,10 +179,9 @@ let explosionAudio = new Audio(); explosionAudio.src = 'sound/explosion.m4a'
 let bellAudio = new Audio(); bellAudio.src = 'sound/bell.mp3'
 let punchAudio = new Audio(); punchAudio.src = 'sound/punch.wav'
 
-let music = new Audio(); 
-music.loop = true; 
+let music = new Audio(); music.loop = true; 
 music.src = 'sound/Template.mp3'
-music.volume = .75
+music.volume = .6
 
 restart()
 
@@ -200,7 +210,7 @@ removePlayer.onclick = () => {
 
 startButton.onclick = () => {
 	playSound(explosionAudio)
-	music.play()
+	if (MUSIC_BUTTON.checked) music.play()
 	robberDisplay.style.display = 'inline';
 	startButton.style.display = 'none';
 	skipButton.style.display = 'inline';
@@ -225,6 +235,8 @@ pauseButton.onclick = () => {
 	if (paused) { resume(); startTimer() }
 	else { pause() }
 }
+
+
 
 restartButton.onclick = () => { playSound(punchAudio); restart();}
 
@@ -259,9 +271,7 @@ function rollDice() {
 	if (get("stackDice").checked) {
 		if (diceStack.length == 0) {
 			for (let i = 1; i <= 6; i++) {
-				for (let j = 1; j <= 6; j++) {
-					diceStack.push(i + j)
-				}
+				for (let j = 1; j <= 6; j++) diceStack.push(i + j)
 			}
 		}
 		shuffle(diceStack)
@@ -331,7 +341,7 @@ function pause() {
 }
 
 function resume() {
-	music.play()
+	if (MUSIC_BUTTON.checked) {music.play(); console.log(MUSIC_BUTTON.checked)}
 	paused = false;
 	pauseButton.innerHTML = 'PAUSE';
 	pauseButton.style.backgroundColor = 'salmon';
